@@ -19,7 +19,8 @@ const httpLink = new BatchHttpLink({
 });
 
 const authLink = setContext((_, { headers }) => {
-  // get token from storage or cookie in here
+  // get token from storage or cookie in here.
+  // Use Nookies library if you are working with cookies in NextJS
   const token = "token";
 
   const isAuth = token ? { Authorization: `Bearer ${token}` } : null;
