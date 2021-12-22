@@ -8,13 +8,34 @@ export const APOLLO_STATE_PROP_NAME = "__APOLLO_STATE__";
 
 let apolloClient;
 
+const uri =
+  process.env.NODE_ENV === "development"
+    ? "http://192.168.100.4:3333/graphlq"
+    : "http://192.168.100.4:3333/graphlq";
+
+const httpLink = new BatchHttpLink({
+  uri: uri,
+  batchMax: 5,
+});
+
+const authLink = setContext((_, { headers }) => {
+  // get token from storage or cookie in here
+  const token = "token";
+
+  const isAuth = token ? { Authorization: `Bearer ${token}` } : null;
+
+  return {
+    headers: {
+      ...headers,
+      ...isAuth,
+    },
+  };
+});
+
 function createApolloClient() {
   return new ApolloClient({
     ssrMode: typeof window === "undefined",
-    link: new HttpLink({
-      uri: "https://nextjs-graphql-with-prisma-simple.vercel.app/api", // Server URL (must be absolute)
-      credentials: "same-origin", // Additional fetch() options like `credentials` or `headers`
-    }),
+    link: authLink.concat(httpLink),
     cache: new InMemoryCache({
       typePolicies: {
         Query: {
