@@ -1,12 +1,12 @@
 const Home = ({ title }) => {
   return (
     <div>
-      <h1>{title}</h1>
+      <h1 className="text-3xl font-bold underline">{title}</h1>
     </div>
   );
 };
 
-export async function getServerSideProps() {
+export async function getStaticProps() {
   return {
     props: {
       title: "NextJS starter",
